@@ -1,3 +1,3 @@
-# Utils #
+# Config #
 
-A collection of useful PHP functions, mini classes and snippets
+Config loader
