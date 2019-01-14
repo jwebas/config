@@ -16,7 +16,7 @@ use Jwb\ConfigLoader;
 // Loader without cache and debug.
 $configLoader = new ConfigLoader();
 
-// Loader with cache based on [Symfony Config](https://symfony.com/doc/current/components/config/caching.html).
+// Loader with cache based on Symfony Config(https://symfony.com/doc/current/components/config/caching.html).
 $configLoader = new ConfigLoader($cachePath);
 
 // Loader with cache and debug.
