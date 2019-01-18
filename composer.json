@@ -3,6 +3,8 @@
     "description" : "Config",
     "license" : "MIT",
     "type" : "library",
+    "minimum-stability" : "dev",
+    "prefer-stable" : true,
     "authors" : [
         {
             "name" : "Martynas",
