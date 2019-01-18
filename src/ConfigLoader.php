@@ -6,6 +6,7 @@ namespace Jwb;
 
 
 use Jwb\Abstracts\AbstractConfigLoader;
+use Jwb\Utils\Arr;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
@@ -99,11 +100,11 @@ class ConfigLoader extends AbstractConfigLoader
     {
         if (\is_string($string)) {
             if (preg_match('/^%([0-9A-Za-z._-]+)%$/', $string, $matches)) {
-                $string = array_get($this->parameters, $matches[1], $matches[0]);
+                $string = Arr::get($this->parameters, $matches[1], $matches[0]);
             } else {
                 $string = preg_replace_callback('/%([0-9A-Za-z._-]+)%/', function ($matches) {
 
-                    $string = array_get($this->parameters, $matches[1], $matches[0]);
+                    $string = Arr::get($this->parameters, $matches[1], $matches[0]);
 
                     if (\is_array($string) || \is_object($string)) {
                         return $matches[0];
