@@ -2,23 +2,22 @@
 declare(strict_types=1);
 
 
-namespace Jwb;
+namespace Jwebas\Config\Loaders;
 
 
-use Jwb\Abstracts\AbstractConfigLoader;
-use Jwb\Utils\Arr;
+use Jwebas\Config\Config;
+use Jwebas\Config\Loaders\Abstracts\AbstractConfigLoader;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class ConfigLoader extends AbstractConfigLoader
+class DirectoryLoader extends AbstractConfigLoader
 {
     /**
-     * @var array
-     */
-    protected $parameters = [];
-
-    /**
-     * @inheritdoc
+     * @param string|array              $dir
+     * @param string|string[]           $patterns
+     * @param string|int|string[]|int[] $depth
+     *
+     * @return Config
      */
     public function load($dir, $patterns = '*.php', $depth = '<2'): Config
     {
@@ -79,40 +78,5 @@ class ConfigLoader extends AbstractConfigLoader
         $this->replacePlaceholders($items);
 
         return $items;
-    }
-
-    /**
-     * Parses the configuration and replaces placeholders with the corresponding parameters values.
-     *
-     * @param array $items
-     */
-    protected function replacePlaceholders(array &$items): void
-    {
-        array_walk_recursive($items, [$this, 'replaceStringPlaceholders']);
-    }
-
-    /**
-     * Replaces configuration placeholders with the corresponding parameters values.
-     *
-     * @param $string
-     */
-    protected function replaceStringPlaceholders(&$string): void
-    {
-        if (\is_string($string)) {
-            if (preg_match('/^%([0-9A-Za-z._-]+)%$/', $string, $matches)) {
-                $string = Arr::get($this->parameters, $matches[1], $matches[0]);
-            } else {
-                $string = preg_replace_callback('/%([0-9A-Za-z._-]+)%/', function ($matches) {
-
-                    $string = Arr::get($this->parameters, $matches[1], $matches[0]);
-
-                    if (\is_array($string) || \is_object($string)) {
-                        return $matches[0];
-                    }
-
-                    return $string;
-                }, $string);
-            }
-        }
     }
 }

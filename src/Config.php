@@ -2,11 +2,11 @@
 declare(strict_types=1);
 
 
-namespace Jwb;
+namespace Jwebas\Config;
 
 
 use ArrayAccess;
-use Jwb\Utils\Arr;
+use Jwebas\Utils\Arr;
 
 class Config implements ArrayAccess
 {
@@ -28,16 +28,25 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Get the specified configuration value using "dot" notation.
+     * Get all of the configuration items.
+     *
+     * @return array
+     */
+    public function all(): array
+    {
+        return $this->items;
+    }
+
+    /**
+     * Determine if the given configuration option exists.
      *
      * @param string $key
-     * @param mixed  $default
      *
-     * @return mixed
+     * @return bool
      */
-    public function get(string $key, $default = null)
+    public function offsetExists($key): bool
     {
-        return Arr::get($this->items, $key, $default);
+        return $this->has($key);
     }
 
     /**
@@ -53,6 +62,49 @@ class Config implements ArrayAccess
     }
 
     /**
+     * Get a configuration option.
+     *
+     * @param string $key
+     *
+     * @return mixed
+     */
+    public function offsetGet($key)
+    {
+        return $this->get($key);
+    }
+
+    /*
+     * ------------------------
+     * ArrayAccess methods
+     * ------------------------
+     *
+     * */
+
+    /**
+     * Get the specified configuration value using "dot" notation.
+     *
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function get(string $key, $default = null)
+    {
+        return Arr::get($this->items, $key, $default);
+    }
+
+    /**
+     * Set a configuration option.
+     *
+     * @param string $key
+     * @param mixed  $value
+     */
+    public function offsetSet($key, $value): void
+    {
+        $this->set($key, $value);
+    }
+
+    /**
      * Set a given configuration value using "dot" notation.
      *
      * @param array|string $key
@@ -65,58 +117,6 @@ class Config implements ArrayAccess
         foreach ($keys as $arrayKey => $arrayValue) {
             Arr::set($this->items, $arrayKey, $arrayValue);
         }
-    }
-
-    /**
-     * Get all of the configuration items.
-     *
-     * @return array
-     */
-    public function all(): array
-    {
-        return $this->items;
-    }
-
-    /*
-     * ------------------------
-     * ArrayAccess methods
-     * ------------------------
-     *
-     * */
-
-    /**
-     * Determine if the given configuration option exists.
-     *
-     * @param string $key
-     *
-     * @return bool
-     */
-    public function offsetExists($key): bool
-    {
-        return $this->has($key);
-    }
-
-    /**
-     * Get a configuration option.
-     *
-     * @param string $key
-     *
-     * @return mixed
-     */
-    public function offsetGet($key)
-    {
-        return $this->get($key);
-    }
-
-    /**
-     * Set a configuration option.
-     *
-     * @param string $key
-     * @param mixed  $value
-     */
-    public function offsetSet($key, $value): void
-    {
-        $this->set($key, $value);
     }
 
     /**

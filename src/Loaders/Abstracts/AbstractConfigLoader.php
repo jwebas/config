@@ -2,14 +2,15 @@
 declare(strict_types=1);
 
 
-namespace Jwb\Abstracts;
+namespace Jwebas\Config\Loaders\Abstracts;
 
 
+use Jwebas\Utils\Arr;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Config\Resource\FileResource;
 
-abstract class AbstractConfigLoader implements ConfigLoaderInterface
+abstract class AbstractConfigLoader
 {
     /**
      * @var ConfigCache|null
@@ -20,6 +21,11 @@ abstract class AbstractConfigLoader implements ConfigLoaderInterface
      * @var array
      */
     protected $resources = [];
+
+    /**
+     * @var array
+     */
+    protected $parameters = [];
 
     /**
      * AbstractConfigLoader constructor.
@@ -64,5 +70,40 @@ abstract class AbstractConfigLoader implements ConfigLoaderInterface
     {
         $content = '<?php' . PHP_EOL . PHP_EOL . 'return ' . var_export($items, true) . ';' . PHP_EOL;
         $this->cache->write($content, $this->resources);
+    }
+
+    /**
+     * Parses the configuration and replaces placeholders with the corresponding parameters values.
+     *
+     * @param array $items
+     */
+    protected function replacePlaceholders(array &$items): void
+    {
+        array_walk_recursive($items, [$this, 'replaceStringPlaceholders']);
+    }
+
+    /**
+     * Replaces configuration placeholders with the corresponding parameters values.
+     *
+     * @param $string
+     */
+    protected function replaceStringPlaceholders(&$string): void
+    {
+        if (is_string($string)) {
+            if (preg_match('/^%([0-9A-Za-z._-]+)%$/', $string, $matches)) {
+                $string = Arr::get($this->parameters, $matches[1], $matches[0]);
+            } else {
+                $string = preg_replace_callback('/%([0-9A-Za-z._-]+)%/', function ($matches) {
+
+                    $string = Arr::get($this->parameters, $matches[1], $matches[0]);
+
+                    if (is_array($string) || is_object($string)) {
+                        return $matches[0];
+                    }
+
+                    return $string;
+                }, $string);
+            }
+        }
     }
 }

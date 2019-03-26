@@ -1,4 +1,4 @@
-# Config
+# Jwebas Config
 
 Config is a file configuration loader that supports PHP files.
 
@@ -11,7 +11,7 @@ Config requires PHP 7.1.3+.
 ### Create loader
 
 ```php
-use Jwb\ConfigLoader;
+use Jwebas\ConfigLoader;
 
 // Loader without cache and debug.
 $configLoader = new ConfigLoader();

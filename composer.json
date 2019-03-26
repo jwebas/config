@@ -19,7 +19,7 @@
     },
     "autoload" : {
         "psr-4" : {
-            "Jwb\\" : "src"
+            "Jwebas\\Config\\" : "src"
         }
     },
     "config" : {
