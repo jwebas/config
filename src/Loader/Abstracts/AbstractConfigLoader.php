@@ -1,16 +1,16 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 
 namespace Jwebas\Config\Loaders\Abstracts;
 
 
+use Jwebas\Config\Config;
 use Jwebas\Utils\Arr;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Resource\DirectoryResource;
 use Symfony\Component\Config\Resource\FileResource;
 
-abstract class AbstractConfigLoader
+abstract class AbstractConfigLoader implements ConfigLoaderInterface
 {
     /**
      * @var ConfigCache|null
@@ -59,6 +59,16 @@ abstract class AbstractConfigLoader
     protected function addDirectoryResource(string $resource, string $pattern = null): void
     {
         $this->resources[] = new DirectoryResource($resource, $pattern);
+    }
+
+    /**
+     * @param array $items
+     *
+     * @return Config
+     */
+    protected function getConfig(array $items): Config
+    {
+        return new Config($items);
     }
 
     /**

@@ -1,6 +1,6 @@
 # Jwebas Config
 
-Config is a file configuration loader that supports PHP files.
+Config is a files configuration loader that supports PHP files.
 
 ## Requirements
 
@@ -11,7 +11,7 @@ Config requires PHP 7.1.3+.
 ### Create loader
 
 ```php
-use Jwebas\ConfigLoader;
+use Jwebas\Config\Loader\ConfigLoader;
 
 // Loader without cache and debug.
 $configLoader = new ConfigLoader();
@@ -23,22 +23,30 @@ $configLoader = new ConfigLoader($cachePath);
 $configLoader = new ConfigLoader($cachePath, true);
 ```
 
+### Add resource(s)
+
+```php
+$configLoader
+    ->addDirectory($path_1)
+    ->addDirectory($path_2, [
+        'patterns' => 'config.php',
+        'depth'    => 1,
+        'callback' => static function (array $data, Symfony\Component\Finder\SplFileInfo $file) { return $name; },
+    ]);
+```
+
 ### Get config
 
 ```php
-// Load all supported files in a directory.
-$config = $configLoader->load(__DIR__ . '/config', $patterns = '*.php', $depth = '<2');
-
-// Load all supported files in multiple directories.
-$config = $configLoader->load([__DIR__ . '/config', __DIR__ . '/config1']);
-
-// Load all supported files in a directory with depth <2 and named config.php.
-$config = $configLoader->load(__DIR__ . '/config', 'config.php', , $depth = '<2');
+$config = $configLoader->load();
 ```
 
 ### Use config
 
 ```php
+// Get all of the configuration items.
+$items = $config->all(): array
+
 // Get the specified configuration value using "dot" notation.
 $item = $config->get(string $key, $default = null): mixed
 
@@ -47,9 +55,6 @@ $exists = $config->has(string $key): bool
 
 // Set a given configuration value using "dot" notation.
 $config->set($key, $value = null): void
-
-// Get all of the configuration items.
-$items = $config->all(): array
 ```
 
 ### Links
